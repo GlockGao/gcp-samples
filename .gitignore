@@ -27,3 +27,7 @@ static_collected/ # Django collectstatic 收集的静态文件
 .DS_Store # macOS
 .localized
 Thumbs.db # Windows
+
+# Model generated files
+*.jpg
+*.png
