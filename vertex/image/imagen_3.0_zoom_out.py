@@ -33,13 +33,12 @@ def generate(prompt: str,
 
     for generated_image in response.generated_images:
         image = Image.open(BytesIO(generated_image.image.image_bytes))
-        image.save('imagen-text-image.png')
+        image.save('imagen-zoom-out-image.png')
 
 
 def main():
 
-    prompt = '''A minimalist logo for a health care company on a solid 
-                color background. Include the text Journey.'''
+    prompt = '''A zoomed out photo of a small bag of coffee beans in a messy kitchen.'''
     generate(prompt=prompt, model="imagen-3.0-generate-002") 
 
 

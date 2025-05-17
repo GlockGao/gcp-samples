@@ -33,13 +33,12 @@ def generate(prompt: str,
 
     for generated_image in response.generated_images:
         image = Image.open(BytesIO(generated_image.image.image_bytes))
-        image.save('imagen-text-image.png')
+        image.save('imagen-blur-image.png')
 
 
 def main():
 
-    prompt = '''A minimalist logo for a health care company on a solid 
-                color background. Include the text Journey.'''
+    prompt = '''photo of a city with skyscrapers from the inside of a car with motion blur.'''
     generate(prompt=prompt, model="imagen-3.0-generate-002") 
 
 

@@ -33,13 +33,12 @@ def generate(prompt: str,
 
     for generated_image in response.generated_images:
         image = Image.open(BytesIO(generated_image.image.image_bytes))
-        image.save('imagen-text-image.png')
+        image.save('imagen-marco-image.png')
 
 
 def main():
 
-    prompt = '''A minimalist logo for a health care company on a solid 
-                color background. Include the text Journey.'''
+    prompt = '''photo of a leaf, macro lens.'''
     generate(prompt=prompt, model="imagen-3.0-generate-002") 
 
 

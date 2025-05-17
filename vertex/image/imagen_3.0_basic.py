@@ -1,6 +1,6 @@
 from google import genai
-from google.genai import types
-from PIL import Image
+from google.genai import types  # type: ignore
+from PIL import Image           # type: ignore
 from io import BytesIO
 import base64
 from typing import Union

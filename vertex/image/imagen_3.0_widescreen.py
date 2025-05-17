@@ -1,6 +1,6 @@
 from google import genai
 from google.genai import types  # type: ignore
-from PIL import Image           # type: ignore
+from PIL import Image   # type: ignore
 from io import BytesIO
 import base64
 from typing import Union
@@ -27,19 +27,18 @@ def generate(prompt: str,
         prompt=prompt,
         config=types.GenerateImagesConfig(
             number_of_images=1,
-            aspect_ratio="1:1"
+            aspect_ratio="16:9"
         )
     )
 
     for generated_image in response.generated_images:
         image = Image.open(BytesIO(generated_image.image.image_bytes))
-        image.save('imagen-text-image.png')
+        image.save('imagen-widescreen-image.png')
 
 
 def main():
 
-    prompt = '''A minimalist logo for a health care company on a solid 
-                color background. Include the text Journey.'''
+    prompt = '''a man wearing all white clothing sitting on the beach, close up, golden hour lighting.'''
     generate(prompt=prompt, model="imagen-3.0-generate-002") 
 
 
