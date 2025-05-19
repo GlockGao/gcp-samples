@@ -38,7 +38,7 @@ def generate(prompt: str,
 
 def main():
 
-    prompt = '''A charcoal drawing of an angular.'''
+    prompt = '''A charcoal drawing of an angular sporty electric sedan with skyscrapers in the background.'''
     generate(prompt=prompt, model="imagen-3.0-generate-002") 
 
 
