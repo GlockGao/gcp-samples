@@ -38,7 +38,7 @@ def generate_from_text(prompt: str,
     print(operation.response.generated_videos)
     for n, generated_video in enumerate(operation.response.generated_videos):
         client.files.download(file=generated_video.video)
-        generated_video.video.save(f"video{n}.mp4")  # save the video
+        generated_video.video.save(f"video-text-{n}.mp4")  # save the video
 
 
 def main():
