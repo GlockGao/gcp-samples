@@ -32,3 +32,9 @@ Thumbs.db # Windows
 *.jpg
 *.png
 *.mp4
+
+# terraform
+*.tfstate
+*.tfstate.backup
+*.terraform
+*.terraform.lock.hcl
