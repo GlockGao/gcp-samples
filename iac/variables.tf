@@ -41,6 +41,9 @@ variable "vpc_networks" {
     # Network profile for RDMA support
     network_profile = optional(string)
 
+    # Firewall configuration
+    create_firewall_rules = optional(bool, true)
+
     # Multiple subnets configuration
     subnets = optional(list(object({
       name          = string

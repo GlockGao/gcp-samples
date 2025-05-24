@@ -44,6 +44,9 @@ module "vpc_networks" {
   # Network profile for RDMA support
   network_profile = each.value.network_profile != null ? each.value.network_profile : null
 
+  # Firewall configuration
+  create_firewall_rules = each.value.create_firewall_rules != null ? each.value.create_firewall_rules : true
+
   # Pass the list of subnets
   subnets = each.value.subnets
 }

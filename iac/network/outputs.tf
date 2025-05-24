@@ -42,8 +42,8 @@ output "subnet_cidrs" {
 
 output "firewall_rules" {
   description = "The firewall rules created for the VPC network"
-  value = [
-    google_compute_firewall.allow_ssh_http_https.name,
-    google_compute_firewall.allow_internal.name
-  ]
+  value = var.create_firewall_rules ? [
+    google_compute_firewall.allow_ssh_http_https[0].name,
+    google_compute_firewall.allow_internal[0].name
+  ] : []
 }

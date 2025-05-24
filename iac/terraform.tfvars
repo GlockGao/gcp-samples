@@ -18,6 +18,7 @@ vpc_networks = {
     routing_mode                 = "GLOBAL"
     bgp_inter_region_cost        = "DEFAULT"
     bgp_best_path_selection_mode = "STANDARD"
+    create_firewall_rules        = true  # Enable firewall rules for product VPC
     subnets = [
       {
         name          = "vsw-base-t06-gcp-us-central1-b-01"
@@ -54,6 +55,7 @@ vpc_networks = {
     routing_mode                 = "GLOBAL"
     bgp_inter_region_cost        = "DEFAULT"
     bgp_best_path_selection_mode = "STANDARD"
+    create_firewall_rules        = false # Disable firewall rules for storage VPC
     subnets = [
       {
         name          = "vsw-stroage-t06-gcp-us-central1-b-01"
@@ -73,6 +75,7 @@ vpc_networks = {
     bgp_inter_region_cost        = "DEFAULT"
     bgp_best_path_selection_mode = "STANDARD"
     network_profile              = "projects/ali-icbu-gpu-project/global/networkProfiles/us-central1-b-vpc-roce" # Enable RDMA RoCE support
+    create_firewall_rules        = false # Disable firewall rules for RDMA VPC
     subnets = [
       {
         name          = "vsw-rdma-t06-gcp-us-central1-b-00"

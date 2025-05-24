@@ -44,8 +44,9 @@ resource "google_compute_subnetwork" "subnets" {
 }
 
 
-# Create a firewall rule to allow SSH, HTTP, and HTTPS traffic
+# Create a firewall rule to allow SSH, HTTP, and HTTPS traffic (optional)
 resource "google_compute_firewall" "allow_ssh_http_https" {
+  count   = var.create_firewall_rules ? 1 : 0
   name    = "${var.network_name}-allow-ssh-http-https"
   network = google_compute_network.vpc_network.name
   project = var.project_id
@@ -62,8 +63,9 @@ resource "google_compute_firewall" "allow_ssh_http_https" {
   depends_on = [google_compute_network.vpc_network]
 }
 
-# Create a firewall rule to allow internal communication within the VPC
+# Create a firewall rule to allow internal communication within the VPC (optional)
 resource "google_compute_firewall" "allow_internal" {
+  count   = var.create_firewall_rules ? 1 : 0
   name    = "${var.network_name}-allow-internal"
   network = google_compute_network.vpc_network.name
   project = var.project_id

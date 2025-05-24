@@ -67,6 +67,13 @@ variable "zone" {
   default     = null
 }
 
+# Firewall configuration
+variable "create_firewall_rules" {
+  description = "Whether to create default firewall rules for the VPC"
+  type        = bool
+  default     = true
+}
+
 variable "subnets" {
   description = "List of subnet configurations to create in the VPC"
   type = list(object({
