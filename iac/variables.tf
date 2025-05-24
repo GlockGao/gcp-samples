@@ -23,22 +23,42 @@ variable "zone" {
 }
 
 # Network configuration variables
-variable "network_name" {
-  description = "The name of the VPC network"
-  type        = string
-  default     = "terraform-network"
-}
+variable "vpc_networks" {
+  description = "Map of VPC networks to create, each with its own configuration"
+  type = map(object({
+    network_name = string
+    region       = optional(string)
+    network_mtu  = optional(number, 1460) # MTU for the VPC network (default: 1460, max: 8896)
+    create_nat   = optional(bool, false)
+    nat_name     = optional(string)
+    router_name  = optional(string)
 
-variable "subnet_name" {
-  description = "The name of the subnet"
-  type        = string
-  default     = "terraform-subnet"
-}
+    # BGP routing configuration
+    routing_mode                 = optional(string, "REGIONAL") # REGIONAL or GLOBAL
+    bgp_inter_region_cost        = optional(string, "DEFAULT")  # DEFAULT, ADD_COST_TO_MED
+    bgp_best_path_selection_mode = optional(string, "STANDARD") # STANDARD, LEGACY
 
-variable "subnet_cidr" {
-  description = "The CIDR range for the subnet"
-  type        = string
-  default     = "10.0.0.0/24"
+    # Network profile for RDMA support
+    network_profile = optional(string)
+
+    # For backward compatibility
+    subnet_name = optional(string)
+    subnet_cidr = optional(string)
+
+    # New field for multiple subnets
+    subnets = optional(list(object({
+      name          = string
+      ip_cidr_range = string
+      region        = optional(string)
+      secondary_ip_ranges = optional(list(object({
+        range_name    = string
+        ip_cidr_range = string
+      })), [])
+      private_ip_google_access = optional(bool, true)
+      description              = optional(string, "Subnet created with Terraform")
+    })), [])
+  }))
+  default = {}
 }
 
 # Instance configuration variables
