@@ -43,19 +43,6 @@ resource "google_compute_subnetwork" "subnets" {
   }
 }
 
-# Create a default subnet for backward compatibility if subnets is empty
-resource "google_compute_subnetwork" "default_subnet" {
-  count         = length(var.subnets) == 0 ? 1 : 0
-  name          = var.subnet_name
-  ip_cidr_range = var.subnet_cidr
-  region        = var.region
-  network       = google_compute_network.vpc_network.id
-  project       = var.project_id
-  description   = "Default subnet created with Terraform"
-
-  # Optional: Enable private Google access only if network profile is not set
-  private_ip_google_access = var.network_profile == null ? true : false
-}
 
 # Create a firewall rule to allow SSH, HTTP, and HTTPS traffic
 resource "google_compute_firewall" "allow_ssh_http_https" {
@@ -95,8 +82,8 @@ resource "google_compute_firewall" "allow_internal" {
     protocol = "icmp"
   }
 
-  # Use subnet CIDR ranges from created subnets, or fallback to default subnet CIDR
-  source_ranges = length(var.subnets) > 0 ? [for subnet in var.subnets : subnet.ip_cidr_range] : (var.subnet_cidr != null ? [var.subnet_cidr] : ["10.0.0.0/8"])
+  # Use subnet CIDR ranges from created subnets
+  source_ranges = [for subnet in var.subnets : subnet.ip_cidr_range]
   description   = "Allow internal communication within the VPC"
 
   # Explicit dependency to ensure proper deletion order

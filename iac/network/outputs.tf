@@ -15,26 +15,6 @@ output "network_self_link" {
   value       = google_compute_network.vpc_network.self_link
 }
 
-output "subnet_id" {
-  description = "The ID of the default subnet (for backward compatibility)"
-  value       = length(var.subnets) == 0 ? google_compute_subnetwork.default_subnet[0].id : null
-}
-
-output "subnet_name" {
-  description = "The name of the default subnet (for backward compatibility)"
-  value       = length(var.subnets) == 0 ? google_compute_subnetwork.default_subnet[0].name : null
-}
-
-output "subnet_self_link" {
-  description = "The self link of the default subnet (for backward compatibility)"
-  value       = length(var.subnets) == 0 ? google_compute_subnetwork.default_subnet[0].self_link : null
-}
-
-output "subnet_cidr" {
-  description = "The CIDR range of the default subnet (for backward compatibility)"
-  value       = length(var.subnets) == 0 ? google_compute_subnetwork.default_subnet[0].ip_cidr_range : null
-}
-
 output "subnets" {
   description = "Map of subnet names to subnet objects"
   value       = google_compute_subnetwork.subnets

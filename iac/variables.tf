@@ -41,11 +41,7 @@ variable "vpc_networks" {
     # Network profile for RDMA support
     network_profile = optional(string)
 
-    # For backward compatibility
-    subnet_name = optional(string)
-    subnet_cidr = optional(string)
-
-    # New field for multiple subnets
+    # Multiple subnets configuration
     subnets = optional(list(object({
       name          = string
       ip_cidr_range = string

@@ -44,10 +44,6 @@ module "vpc_networks" {
   # Network profile for RDMA support
   network_profile = each.value.network_profile != null ? each.value.network_profile : null
 
-  # Pass subnet configuration
-  subnet_name = each.value.subnet_name != null ? each.value.subnet_name : null
-  subnet_cidr = each.value.subnet_cidr != null ? each.value.subnet_cidr : null
-
   # Pass the list of subnets
   subnets = each.value.subnets
 }

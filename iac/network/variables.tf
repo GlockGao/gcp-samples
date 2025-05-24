@@ -82,16 +82,3 @@ variable "subnets" {
   }))
   default = []
 }
-
-# Variables for backward compatibility
-variable "subnet_name" {
-  description = "The name of the default subnet (for backward compatibility)"
-  type        = string
-  default     = null
-}
-
-variable "subnet_cidr" {
-  description = "The CIDR block for the default subnet (for backward compatibility)"
-  type        = string
-  default     = null
-}
