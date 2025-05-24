@@ -74,7 +74,8 @@ vpc_networks = {
     routing_mode                 = "REGIONAL"
     bgp_inter_region_cost        = "DEFAULT"
     bgp_best_path_selection_mode = "STANDARD"
-    network_profile              = "projects/ali-icbu-gpu-project/global/networkProfiles/us-central1-b-vpc-roce" # Enable RDMA RoCE support
+    # network_profile              = "projects/ali-icbu-gpu-project/global/networkProfiles/us-central1-b-vpc-roce" # Enable RDMA RoCE support
+    network_profile              = "https://www.googleapis.com/compute/v1/projects/ali-icbu-gpu-project/global/networkProfiles/us-central1-b-vpc-roce" # Enable RDMA RoCE support
     create_firewall_rules        = false                                                                         # Disable firewall rules for RDMA VPC
     subnets = [
       {
