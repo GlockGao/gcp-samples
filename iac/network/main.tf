@@ -30,8 +30,9 @@ resource "google_compute_subnetwork" "subnets" {
   project       = var.project_id
   description   = each.value.description
 
-  # Enable private Google access only if network profile is not set (RDMA networks don't support this field)
-  private_ip_google_access = var.network_profile == null ? each.value.private_ip_google_access : false
+  # Only set private_ip_google_access for non-RDMA networks
+  # RDMA networks (with network_profile) don't support this field
+  private_ip_google_access = var.network_profile == null ? each.value.private_ip_google_access : null
 
   # Configure secondary IP ranges if provided
   dynamic "secondary_ip_range" {
@@ -41,8 +42,13 @@ resource "google_compute_subnetwork" "subnets" {
       ip_cidr_range = secondary_ip_range.value.ip_cidr_range
     }
   }
-}
 
+  # Lifecycle rule to prevent unnecessary recreation
+  # For RDMA networks, we ignore changes to private_ip_google_access
+  lifecycle {
+    ignore_changes = [private_ip_google_access]
+  }
+}
 
 # Create a firewall rule to allow SSH, HTTP, and HTTPS traffic (optional)
 resource "google_compute_firewall" "allow_ssh_http_https" {

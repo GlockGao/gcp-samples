@@ -18,7 +18,7 @@ vpc_networks = {
     routing_mode                 = "GLOBAL"
     bgp_inter_region_cost        = "DEFAULT"
     bgp_best_path_selection_mode = "STANDARD"
-    create_firewall_rules        = true  # Enable firewall rules for product VPC
+    create_firewall_rules        = true # Enable firewall rules for product VPC
     subnets = [
       {
         name          = "vsw-base-t06-gcp-us-central1-b-01"
@@ -75,7 +75,7 @@ vpc_networks = {
     bgp_inter_region_cost        = "DEFAULT"
     bgp_best_path_selection_mode = "STANDARD"
     network_profile              = "projects/ali-icbu-gpu-project/global/networkProfiles/us-central1-b-vpc-roce" # Enable RDMA RoCE support
-    create_firewall_rules        = false # Disable firewall rules for RDMA VPC
+    create_firewall_rules        = false                                                                         # Disable firewall rules for RDMA VPC
     subnets = [
       {
         name          = "vsw-rdma-t06-gcp-us-central1-b-00"
@@ -144,6 +144,7 @@ labels = {
   environment = "dev"
   managed_by  = "terraform"
   project     = "gcp-samples"
+  goog-ec-src = "vm_add-tf"
 }
 
 # Optional: Create a persistent disk
@@ -155,3 +156,95 @@ persistent_disk_type    = "pd-standard"
 preemptible         = false
 automatic_restart   = true
 on_host_maintenance = "MIGRATE"
+
+# VM instance network interfaces configuration (10 NICs)
+network_interfaces = [
+  # NIC 1: vpc-product with external IP
+  {
+    network_name  = "vpc-product"
+    subnet_name   = "vsw-base-t06-gcp-us-central1-b-01"
+    access_config = true  # External IP for first interface
+    nic_type      = "GVNIC"
+    queue_count   = 0     # Number of queues for better performance
+    stack_type    = "IPV4_ONLY"
+  },
+  # NIC 2: vpc-storage
+  {
+    network_name  = "vpc-storage"
+    subnet_name   = "vsw-stroage-t06-gcp-us-central1-b-01"
+    access_config = false
+    nic_type      = "GVNIC"
+    queue_count   = 0     # Fewer queues for storage traffic
+    stack_type    = "IPV4_ONLY"
+  },
+  # NIC 3-10: vpc-rdma with MRDMA type for high-performance RDMA workloads
+  # {
+  #   network_name  = "vpc-rdma"
+  #   subnet_name   = "vsw-rdma-t06-gcp-us-central1-b-00"
+  #   access_config = false
+  #   nic_type      = "MRDMA"  
+  #   queue_count   = 8        # Maximum queues for RDMA performance
+  #   stack_type    = "IPV4_ONLY"
+  # },
+  # {
+  #   network_name  = "vpc-rdma"
+  #   subnet_name   = "vsw-rdma-t06-gcp-us-central1-b-01"
+  #   access_config = false
+  #   nic_type      = "MRDMA"
+  #   queue_count   = 8
+  #   stack_type    = "IPV4_ONLY"
+  # },
+  # {
+  #   network_name  = "vpc-rdma"
+  #   subnet_name   = "vsw-rdma-t06-gcp-us-central1-b-02"
+  #   access_config = false
+  #   nic_type      = "MRDMA"
+  #   queue_count   = 8
+  #   stack_type    = "IPV4_ONLY"
+  # },
+  # {
+  #   network_name  = "vpc-rdma"
+  #   subnet_name   = "vsw-rdma-t06-gcp-us-central1-b-03"
+  #   access_config = false
+  #   nic_type      = "MRDMA"
+  #   queue_count   = 8
+  #   stack_type    = "IPV4_ONLY"
+  # },
+  # {
+  #   network_name  = "vpc-rdma"
+  #   subnet_name   = "vsw-rdma-t06-gcp-us-central1-b-04"
+  #   access_config = false
+  #   nic_type      = "MRDMA"
+  #   queue_count   = 8
+  #   stack_type    = "IPV4_ONLY"
+  # },
+  # {
+  #   network_name  = "vpc-rdma"
+  #   subnet_name   = "vsw-rdma-t06-gcp-us-central1-b-05"
+  #   access_config = false
+  #   nic_type      = "MRDMA"
+  #   queue_count   = 8
+  #   stack_type    = "IPV4_ONLY"
+  # },
+  # {
+  #   network_name  = "vpc-rdma"
+  #   subnet_name   = "vsw-rdma-t06-gcp-us-central1-b-06"
+  #   access_config = false
+  #   nic_type      = "MRDMA"
+  #   queue_count   = 8
+  #   stack_type    = "IPV4_ONLY"
+  # },
+  # {
+  #   network_name  = "vpc-rdma"
+  #   subnet_name   = "vsw-rdma-t06-gcp-us-central1-b-07"
+  #   access_config = false
+  #   nic_type      = "MRDMA"
+  #   queue_count   = 8
+  #   stack_type    = "IPV4_ONLY"
+  # }
+]
+
+# VM instance metadata configuration
+instance_metadata = {
+  startup-script = "#!/bin/bash\necho 'VM with 10 NICs started successfully' > /var/log/startup.log\necho 'RDMA interfaces configured' >> /var/log/startup.log"
+}

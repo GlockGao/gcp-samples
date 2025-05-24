@@ -47,26 +47,34 @@ variable "boot_disk_type" {
   default     = "pd-standard"
 }
 
-variable "network_self_link" {
-  description = "The self link of the VPC network"
-  type        = string
+# Network interface configurations
+variable "network_interfaces" {
+  description = "List of network interface configurations"
+  type = list(object({
+    network_name    = string
+    subnet_name     = string
+    network_ip      = optional(string)
+    access_config   = optional(bool, false)
+    nic_type        = optional(string, "VIRTIO_NET")  # VIRTIO_NET, GVNIC, or MRDMA
+    queue_count     = optional(number)                # Number of queues for the network interface
+    stack_type      = optional(string, "IPV4_ONLY")   # IPV4_ONLY, IPV4_IPV6, or IPV6_ONLY
+  }))
+  default = []
 }
 
-variable "subnet_self_link" {
-  description = "The self link of the subnet"
-  type        = string
+variable "vpc_networks" {
+  description = "Map of VPC network outputs from network module"
+  type = map(object({
+    network_self_link = string
+    subnet_self_links = map(string)
+  }))
+  default = {}
 }
 
-variable "startup_script" {
-  description = "The startup script for the compute instance"
-  type        = string
-  default     = ""
-}
-
-variable "ssh_keys" {
-  description = "The SSH keys for the compute instance"
-  type        = string
-  default     = ""
+variable "metadata" {
+  description = "Metadata key-value pairs for the compute instance"
+  type        = map(string)
+  default     = {}
 }
 
 variable "labels" {

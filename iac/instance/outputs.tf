@@ -15,14 +15,27 @@ output "instance_self_link" {
   value       = google_compute_instance.vm_instance.self_link
 }
 
-output "instance_internal_ip" {
-  description = "The internal IP of the compute instance"
-  value       = google_compute_instance.vm_instance.network_interface[0].network_ip
+output "network_interfaces" {
+  description = "All network interfaces of the compute instance"
+  value = [
+    for ni in google_compute_instance.vm_instance.network_interface : {
+      network_ip  = ni.network_ip
+      external_ip = length(ni.access_config) > 0 ? ni.access_config[0].nat_ip : null
+      network     = ni.network
+      subnetwork  = ni.subnetwork
+      nic_type    = ni.nic_type
+    }
+  ]
 }
 
-output "instance_external_ip" {
-  description = "The external IP of the compute instance"
-  value       = google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip
+output "primary_internal_ip" {
+  description = "The internal IP of the primary network interface"
+  value       = length(google_compute_instance.vm_instance.network_interface) > 0 ? google_compute_instance.vm_instance.network_interface[0].network_ip : null
+}
+
+output "primary_external_ip" {
+  description = "The external IP of the primary network interface (if exists)"
+  value       = length(google_compute_instance.vm_instance.network_interface) > 0 && length(google_compute_instance.vm_instance.network_interface[0].access_config) > 0 ? google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip : null
 }
 
 output "instance_machine_type" {

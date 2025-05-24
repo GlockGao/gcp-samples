@@ -142,3 +142,25 @@ variable "on_host_maintenance" {
   type        = string
   default     = "MIGRATE"
 }
+
+# VM instance network interfaces configuration
+variable "network_interfaces" {
+  description = "List of network interface configurations for the VM instance"
+  type = list(object({
+    network_name    = string
+    subnet_name     = string
+    network_ip      = optional(string)
+    access_config   = optional(bool, false)
+    nic_type        = optional(string, "VIRTIO_NET")  # VIRTIO_NET, GVNIC, or MRDMA
+    queue_count     = optional(number)                # Number of queues for the network interface
+    stack_type      = optional(string, "IPV4_ONLY")   # IPV4_ONLY, IPV4_IPV6, or IPV6_ONLY
+  }))
+  default = []
+}
+
+# VM instance metadata configuration
+variable "instance_metadata" {
+  description = "Metadata key-value pairs for the VM instance"
+  type        = map(string)
+  default     = {}
+}

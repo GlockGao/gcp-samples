@@ -50,3 +50,47 @@ module "vpc_networks" {
   # Pass the list of subnets
   subnets = each.value.subnets
 }
+
+# Create VM instance with multiple NICs
+module "vm_instance" {
+  source = "./instance"
+
+  project_id    = var.project_id
+  region        = var.region
+  zone          = var.zone
+  instance_name = var.instance_name
+  machine_type  = var.machine_type
+
+  # Boot disk configuration
+  boot_disk_image   = var.boot_disk_image
+  boot_disk_size_gb = var.boot_disk_size_gb
+  boot_disk_type    = var.boot_disk_type
+
+  # Network interfaces configuration from variables
+  network_interfaces = var.network_interfaces
+
+  # Pass VPC network information
+  vpc_networks = {
+    for name, network in module.vpc_networks : name => {
+      network_self_link = network.network_self_link
+      subnet_self_links = network.subnet_self_links
+    }
+  }
+
+  # Instance configuration
+  metadata               = var.instance_metadata
+  labels                 = var.labels
+  tags                   = var.tags
+  service_account_email  = ""
+  service_account_scopes = ["https://www.googleapis.com/auth/cloud-platform"]
+
+  # Persistent disk configuration
+  create_persistent_disk  = var.create_persistent_disk
+  persistent_disk_size_gb = var.persistent_disk_size_gb
+  persistent_disk_type    = var.persistent_disk_type
+
+  # Scheduling options
+  preemptible         = var.preemptible
+  automatic_restart   = var.automatic_restart
+  on_host_maintenance = var.on_host_maintenance
+}

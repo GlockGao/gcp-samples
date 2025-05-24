@@ -1,6 +1,6 @@
 # Instance module - main configuration
 
-# Create a compute instance
+# Create a compute instance with multiple NICs
 resource "google_compute_instance" "vm_instance" {
   name         = var.instance_name
   machine_type = var.machine_type
@@ -15,26 +15,31 @@ resource "google_compute_instance" "vm_instance" {
     }
   }
 
-  # Attach to the specified subnet
-  network_interface {
-    network    = var.network_self_link
-    subnetwork = var.subnet_self_link
+  # Create multiple network interfaces
+  dynamic "network_interface" {
+    for_each = var.network_interfaces
+    content {
+      network     = var.vpc_networks[network_interface.value.network_name].network_self_link
+      subnetwork  = var.vpc_networks[network_interface.value.network_name].subnet_self_links[network_interface.value.subnet_name]
+      network_ip  = network_interface.value.network_ip
+      nic_type    = network_interface.value.nic_type
+      queue_count = network_interface.value.queue_count
+      stack_type  = network_interface.value.stack_type
 
-    # Uncomment to assign an external IP
-    access_config {
-      # Ephemeral public IP
+      # Add external IP only for the first interface if specified
+      dynamic "access_config" {
+        for_each = network_interface.value.access_config ? [1] : []
+        content {
+          # Ephemeral public IP
+        }
+      }
     }
   }
 
-  # Add metadata
-  metadata = {
-    startup-script = var.startup_script
-  }
-
-  # Add SSH keys if provided
-  metadata = {
-    ssh-keys = var.ssh_keys
-  }
+  # Add metadata including OS Login
+  metadata = merge({
+    enable-oslogin = "TRUE"
+  }, var.metadata)
 
   # Add labels
   labels = var.labels
@@ -44,7 +49,7 @@ resource "google_compute_instance" "vm_instance" {
 
   # Service account
   service_account {
-    email  = var.service_account_email
+    email  = var.service_account_email != "" ? var.service_account_email : null
     scopes = var.service_account_scopes
   }
 
