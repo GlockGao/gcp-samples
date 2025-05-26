@@ -11,4 +11,4 @@ uv venv
 source .venv/bin/activate
 
 # Requirements installation
-uv add mcp
+uv add mcp anthropic[vertex]
