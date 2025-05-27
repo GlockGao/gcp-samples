@@ -117,9 +117,8 @@ def main():
 
     client = setup_openai_client()
 
-    model = "google/gemini-2.5-pro-preview-05-06"
-    # model = "google/gemini-2.5-flash-preview-04-17"
-
+    # model = "google/gemini-2.5-pro-preview-05-06"
+    model = "google/gemini-2.5-flash-preview-04-17"
 
     response = generate_with_openai(client=client,
                                     messages=messages,
