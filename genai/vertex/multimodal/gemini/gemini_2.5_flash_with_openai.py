@@ -122,6 +122,7 @@ def main():
                                     extra_body=extra_body,
                                     model=model)
 
+    print(response)
 
     thought, answer = parse_response_with_tags(
         response.choices[0].message.content, "think")
