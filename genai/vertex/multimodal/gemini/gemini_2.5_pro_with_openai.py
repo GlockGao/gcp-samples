@@ -64,6 +64,10 @@ messages = [
 
 extra_body = {
     "google": {
+      "thinkingConfig": {
+        "includeThoughts": True,
+        "thinkingBudget": 1024
+      },
       "thought_tag_marker": "think"
     }
   }
@@ -79,6 +83,7 @@ def setup_openai_client():
     # 认证
     credentials, _ = default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
     credentials.refresh(Request())
+    print(f"Credentials token : {credentials.token}")
     
     # 设置API主机
     api_host = "aiplatform.googleapis.com"
@@ -117,8 +122,8 @@ def main():
 
     client = setup_openai_client()
 
-    # model = "google/gemini-2.5-pro-preview-05-06"
-    model = "google/gemini-2.5-flash-preview-04-17"
+    model = "google/gemini-2.5-pro-preview-05-06"
+    # model = "google/gemini-2.5-flash-preview-04-17"
 
     response = generate_with_openai(client=client,
                                     messages=messages,

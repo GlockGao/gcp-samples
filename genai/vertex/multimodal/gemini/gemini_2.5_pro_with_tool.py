@@ -61,7 +61,7 @@ def generate_with_tool(prompt: str,
       config=config
     )
 
-    # print(response)
+    print(response)
     # print(type(response))
     # print(type(response.candidates))
     # print(type(response.candidates[0]))
