@@ -15,8 +15,8 @@ def claude_predict():
     # --- 1. 设置环境变量 (Set Environment Variables) ---
     # 您可以像这样直接在代码中设置，或者在您的运行环境中预先设置好
     # You can set them directly in the code like this, or pre-set them in your environment.
-    # os.environ['MODEL_ID'] = 'claude-opus-4@20250514'
-    os.environ['MODEL_ID'] = 'claude-3-7-sonnet@20250219'
+    os.environ['MODEL_ID'] = 'claude-opus-4@20250514'
+    # os.environ['MODEL_ID'] = 'claude-3-7-sonnet@20250219'
     os.environ['LOCATION'] = 'us-east5'
     os.environ['PROJECT_ID'] = 'ali-icbu-gpu-project' # 请替换为您的项目ID (Please replace with your Project ID)
 
@@ -67,10 +67,10 @@ def claude_predict():
         }],
         "max_tokens": 2048,
         "stream": False,
-        # "thinking": {
-        #     "type": "enable",
-        #     "budget_tokens": 1024
-        # }
+        "thinking": {
+            "type": "enabled",
+            "budget_tokens": 1024
+        }
     }
 
     # --- 5. 发送请求并处理响应 (Send Request and Handle Response) ---
