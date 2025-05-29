@@ -1,4 +1,5 @@
 from utils.time_utils import timing_decorator
+from utils.think_parse_utils import parse_response_with_tags
 from google.auth import default
 from google.auth.transport.requests import Request
 import openai
@@ -63,14 +64,16 @@ messages = [
 ]
 
 extra_body = {
-    "google": {
-      "thinkingConfig": {
-        "includeThoughts": True,
-        "thinkingBudget": 1024
-      },
-      "thought_tag_marker": "think"
-    }
-  }
+    "extra_body": {
+        "google": {
+            "thinkingConfig": {
+                "includeThoughts": True,
+                "thinkingBudget": 2048
+            },
+            "thought_tag_marker": "think"
+        }
+    }  
+}
 
 
 def setup_openai_client():
@@ -123,7 +126,8 @@ def main():
     client = setup_openai_client()
 
     model = "google/gemini-2.5-pro-preview-05-06"
-    # model = "google/gemini-2.5-flash-preview-04-17"
+    model = "google/gemini-2.5-flash-preview-04-17"
+    model = "google/gemini-2.5-flash-preview-05-20"
 
     response = generate_with_openai(client=client,
                                     messages=messages,
@@ -132,6 +136,14 @@ def main():
                                     model=model)
 
     print(response)
+
+    thought, answer = parse_response_with_tags(
+        response.choices[0].message.content, "think")
+
+    print("--- Thought ---")
+    print(thought)
+    print("\n--- Answer ---")
+    print(answer)
 
 
 if __name__ == "__main__":
