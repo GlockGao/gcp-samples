@@ -32,6 +32,7 @@ Thumbs.db # Windows
 *.jpg
 *.png
 *.mp4
+!genai/vertex/image/bad_cases/*.png
 
 # terraform
 *.tfstate
