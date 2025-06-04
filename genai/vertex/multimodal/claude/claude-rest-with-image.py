@@ -166,7 +166,7 @@ def claude_predict_with_image(image_path: Optional[str] = None, text_prompt: str
         # Print the successful response content
         print("请求成功! (Request successful!)")
         response_data = response.json()
-        print(response_data)
+        # print(response_data)
         return response_data
 
     except requests.exceptions.RequestException as e:
