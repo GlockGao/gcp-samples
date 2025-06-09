@@ -2,9 +2,11 @@ import openai
 from sglang.utils import print_highlight
 
 
+host = "localhost"
+host = "10.128.0.28"
 port = 30000
 
-client = openai.Client(base_url=f"http://127.0.0.1:{port}/v1", api_key="None")
+client = openai.Client(base_url=f"http://{host}:{port}/v1", api_key="None")
 
 response = client.chat.completions.create(
     model="meta-llama/Llama-3.1-8B-Instruct",

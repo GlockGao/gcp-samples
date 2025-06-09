@@ -2,9 +2,11 @@ import requests
 from sglang.utils import print_highlight
 
 
+host = "localhost"
+host = "10.128.0.28"
 port = 30000
 
-url = f"http://localhost:{port}/v1/chat/completions"
+url = f"http://{host}:{port}/v1/chat/completions"
 
 data = {
     "model": "meta-llama/Llama-3.1-8B-Instruct",
