@@ -1,5 +1,5 @@
 import subprocess, json
-# from sglang.utils import print_highlight
+from sglang.utils import print_highlight
 
 
 host = "localhost"
@@ -14,4 +14,4 @@ curl -s http://{host}:{port}/v1/chat/completions \
 
 response = json.loads(subprocess.check_output(curl_command, shell=True))
 print(response)
-# print_highlight(response)
+print_highlight(response)
