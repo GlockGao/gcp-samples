@@ -1,5 +1,13 @@
-from sglang.utils import print_highlight
+import openai
 from pydantic import BaseModel, Field
+from sglang.utils import print_highlight
+
+
+host = "localhost"
+host = "10.128.0.28"
+port = 30000
+
+client = openai.Client(base_url=f"http://{host}:{port}/v1", api_key="None")
 
 
 # Define the schema using Pydantic
@@ -29,6 +37,7 @@ response = client.chat.completions.create(
 )
 
 response_content = response.choices[0].message.content
+# print_highlight(f"Validated response: {response_content}")
 # validate the JSON response by the pydantic model
 capital_info = CapitalInfo.model_validate_json(response_content)
 print_highlight(f"Validated response: {capital_info.model_dump_json()}")
