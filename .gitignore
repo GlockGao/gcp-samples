@@ -6,6 +6,7 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 *.env
 .vscode/ # 如果使用VS Code，可以忽略其配置文件夹
 *.log
