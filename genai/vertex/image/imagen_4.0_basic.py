@@ -1,13 +1,6 @@
-from google import genai
-from google.genai import types
-from PIL import Image
-from io import BytesIO
-import base64
-from typing import Union
 import os
-
 import vertexai
-from typing import Any, Literal, Optional, cast
+from typing import Optional
 from vertexai.preview.vision_models import ImageGenerationModel
 from utils.time_utils import timing_decorator
 
