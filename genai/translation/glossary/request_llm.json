@@ -1,0 +1,11 @@
+{
+  "sourceLanguageCode": "fr",
+  "targetLanguageCode": "zh-TW",
+  "contents": "chevre",
+  "model": "projects/979398597045/locations/us-central1/models/general/translation-llm",
+  "glossaryConfig": {
+    "glossary": "projects/979398597045/locations/us-central1/glossaries/aligame-glossary",
+    "ignoreCase": true,
+    "contextual_translation_enabled": true
+  }
+}

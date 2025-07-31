@@ -1,7 +1,7 @@
 {
   "name":"projects/ali-icbu-gpu-project/locations/us-central1/glossaries/aligame-glossary",
   "languageCodesSet": {
-    "languageCodes": ["fr", "zh", "zh-tw", "en"]
+    "languageCodes": ["fr", "zh", "zh-TW", "en"]
   },
   "inputConfig": {
     "gcsSource": {
