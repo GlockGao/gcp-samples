@@ -1,0 +1,11 @@
+{
+  "name":"projects/ali-icbu-gpu-project/locations/us-central1/glossaries/aligame-glossary",
+  "languageCodesSet": {
+    "languageCodes": ["fr", "zh", "zh-tw", "en"]
+  },
+  "inputConfig": {
+    "gcsSource": {
+      "inputUri": "gs://easongy-bucket-translation/glossary.csv"
+    }
+  }
+}
