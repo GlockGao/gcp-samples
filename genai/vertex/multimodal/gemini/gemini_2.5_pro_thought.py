@@ -5,21 +5,13 @@ import base64
 import os
 
 
-gemini_api_key = os.getenv('GEMINI_API_KEY')
-
-# if gemini_api_key:
-#     print(f"获取到的 GEMINI_API_KEY: {gemini_api_key}")
-# else:
-#     print("环境变量 'GEMINI_API_KEY' 未设置。")
-
-
-client = genai.Client(api_key=gemini_api_key)
+client = genai.Client()
 
 
 @timing_decorator
 def generate(prompt: str,
              config: types.GenerateContentConfig,
-             model: str = "gemini-2.5-pro-preview-05-06"):
+             model: str = "gemini-2.5-pro"):
 
     response = client.models.generate_content(
       model=model,

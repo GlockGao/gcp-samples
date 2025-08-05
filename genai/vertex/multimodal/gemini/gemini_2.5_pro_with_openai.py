@@ -107,7 +107,7 @@ def generate_with_openai(client: Any,
                          messages: List[Any],
                          tools: List[Any],
                          extra_body: Dict[Any, Any],
-                         model: str = "google/gemini-2.5-pro-preview-05-06"):
+                         model: str = "google/gemini-2.5-pro"):
     response = client.chat.completions.create(
         temperature=0,
         model=model,
@@ -125,9 +125,8 @@ def main():
 
     client = setup_openai_client()
 
-    model = "google/gemini-2.5-pro-preview-05-06"
-    model = "google/gemini-2.5-flash-preview-04-17"
-    model = "google/gemini-2.5-flash-preview-05-20"
+    model = "google/gemini-2.5-pro"
+    # model = "google/gemini-2.5-flash"
 
     response = generate_with_openai(client=client,
                                     messages=messages,

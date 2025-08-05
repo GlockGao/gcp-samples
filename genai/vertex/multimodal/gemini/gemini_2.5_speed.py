@@ -22,7 +22,7 @@ def get_output_tokens(prompt: str, model: str = "gemini-2.5-pro"):
         dict: 包含各种 token 数量和生成速率的字典
     """
     # 设置客户端
-    client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
+    client = genai.Client()
     
     # 记录开始时间
     start_time = time.time()
