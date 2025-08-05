@@ -5,16 +5,21 @@ import time
 import os
 
 
-vertex_api_key = os.getenv('GEMINI_API_KEY')
+project = os.getenv('GOOGLE_CLOUD_PROJECT')
 
-if vertex_api_key:
-    print(f"获取到的 VERTEX_API_KEY: {vertex_api_key}")
+if project:
+    print(f"获取到的 GOOGLE_CLOUD_PROJECT: {project}")
 else:
-    print("环境变量 'VERTEX_API_KEY' 未设置。")
+    print("环境变量 'GOOGLE_CLOUD_PROJECT' 未设置。")
+
+location = os.getenv('GOOGLE_CLOUD_LOCATION')
+if location:
+    print(f"获取到的 GOOGLE_CLOUD_LOCATION: {location}")
+else:
+    print("环境变量 'GOOGLE_CLOUD_LOCATION' 未设置。")
 
 
-client = genai.Client(api_key=vertex_api_key)
-
+client = genai.Client()
 
 @timing_decorator
 def generate_from_text(prompt: str,
@@ -35,20 +40,20 @@ def generate_from_text(prompt: str,
 
     # 3. Save the video
     print(operation.response)
-    print(operation.response.generated_videos)
-    for n, generated_video in enumerate(operation.response.generated_videos):
-        client.files.download(file=generated_video.video)
-        generated_video.video.save(f"video-text-{n}.mp4")  # save the video
+    if operation.response:
+        print(operation.result.generated_videos[0].video.uri)
 
 
 def main():
     model = "veo-3.0-generate-001"
     prompt = '''The sneaker on the billboard suddenly springs to life, its laces tying themselves. It leaps off the screen, landing on the rooftop below with a soft thud, and sprints out of frame. Audio: The sound of tying laces, a digital whoosh, a soft landing sound.'''
+    output_gcs_uri = "gs://bucket-easongy-poc/veo3"
     config = types.GenerateVideosConfig(
         aspect_ratio="16:9",                # "16:9" or "9:16"
+        output_gcs_uri=output_gcs_uri,
         duration_seconds=8,
-        # enhance_prompt=True,              # Not supported yet
-        # fps=24,                           # Not supported yet
+        enhance_prompt=True,                # Not supported yet
+        fps=24,                             # Not supported yet
         number_of_videos=1,
         generate_audio=True,
         resolution="1080p",                 # "720p" or "1080p"
