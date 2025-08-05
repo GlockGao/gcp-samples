@@ -1,11 +1,12 @@
 {
   "sourceLanguageCode": "fr",
-  "targetLanguageCode": "zh-TW",
-  "contents": "chevre",
+  "targetLanguageCode": "zh",
+  "contents": ["<span translate=\"no\">whatever</span>anybody want this? chevre"],
+  "mimeType": "text/html",
   "model": "projects/979398597045/locations/us-central1/models/general/translation-llm",
   "glossaryConfig": {
     "glossary": "projects/979398597045/locations/us-central1/glossaries/aligame-glossary",
     "ignoreCase": true,
-    "contextual_translation_enabled": false
+    "contextual_translation_enabled": true
   }
 }
