@@ -1,61 +1,66 @@
 import os
-import vertexai
 from typing import Optional
-from vertexai.preview.vision_models import ImageGenerationModel
+from google import genai
+from google.genai.types import GenerateImagesConfig
 from utils.time_utils import timing_decorator
 
 
-PROJECT_ID = os.getenv('PROJECT_ID')
-
-if PROJECT_ID:
-    print(f"获取到的 PROJECT_ID: {PROJECT_ID}")
+project = os.getenv('GOOGLE_CLOUD_PROJECT')
+if project:
+    print(f"获取到的 GOOGLE_CLOUD_PROJECT: {project}")
 else:
-    print("环境变量 'PROJECT_ID' 未设置。")
+    print("环境变量 'GOOGLE_CLOUD_PROJECT' 未设置。")
 
-vertexai.init(project=PROJECT_ID, location="us-central1")
+location = os.getenv('GOOGLE_CLOUD_LOCATION')
+if location:
+    print(f"获取到的 GOOGLE_CLOUD_LOCATION: {location}")
+else:
+    print("环境变量 'GOOGLE_CLOUD_LOCATION' 未设置。")
 
-model = ImageGenerationModel.from_pretrained("imagen-4.0-generate-preview-06-06")
+client = genai.Client(project=project, location=location)
 
 
 @timing_decorator
-def generate(prompt: str,
-             number_of_images: int = 1,
-             seed: Optional[int] = 100,
-             negative_prompt: Optional[str] = None,
-             aspect_ratio: Optional[str] = "1:1",
-             compression_quality: Optional[int] = 75,
-             language: Optional[str] = None,
-             output_gcs_uri: Optional[str] = None,
-             add_watermark: Optional[bool] = False,
-             safety_filter_level: Optional[str] = "block_some",
-             person_generation: Optional[str] = "allow_adult"):
+def generate(
+    model: str,
+    prompt: str,
+    config: GenerateImagesConfig,
+    file: str = 'imagen4-image-basic.png'):
 
-    images = model.generate_images(
+    image = client.models.generate_images(
+        model=model,
         prompt=prompt,
-        number_of_images=number_of_images,
-        # Optional parameters
-        negative_prompt=negative_prompt,
-        aspect_ratio=aspect_ratio,
-        # compression_quality=compression_quality,
-        language=language,
-        output_gcs_uri=output_gcs_uri,
-
-        # You can't use a seed value and watermark at the same time.
-        add_watermark=add_watermark,
-        seed=seed,
-        safety_filter_level=safety_filter_level,
-        person_generation=person_generation,
+        config=config,
     )
 
-    images[0].save(location='imagen4-image-basic.png', include_generation_parameters=False)
+    image.generated_images[0].image.save(file)
 
 
 def main():
 
-    prompt = ('Hi, can you create a 3d rendered image of a pig '
-                'with wings and a top hat flying over a happy '
-                'futuristic scifi city with lots of greenery?')
-    generate(prompt=prompt) 
+    # 1. 提示词和配置文件
+    prompt = "a man wearing all white clothing sitting on the beach, close up, golden hour lighting"
+    config = GenerateImagesConfig(
+        aspect_ratio="16:9",        # Supported values are “1:1”, “3:4”, “4:3”, “9:16”, and “16:9”
+        image_size="2K",            # Supported sizes are 1K and 2K
+        number_of_images=1,
+    )
+
+    # 2. 调用不同的模型
+    # 2.1 standard imagen 4.0
+    model = "imagen-4.0-generate-preview-06-06"
+    file = "imagen-4.0-generate-preview-06-06.png"
+    generate(model=model, prompt=prompt, config=config, file=file)
+
+    # 2.2 ultra imagen 4.0
+    model = "imagen-4.0-ultra-generate-preview-06-06"
+    file = "imagen-4.0-ultra-generate-preview-06-06.png"
+    generate(model=model, prompt=prompt, config=config, file=file)
+
+    # 2.3 fast imagen 4.0
+    model = "imagen-4.0-fast-generate-preview-06-06"
+    file = "imagen-4.0-fast-generate-preview-06-06.png"
+    generate(model=model, prompt=prompt, config=config, file=file)
 
 
 if __name__ == "__main__":

@@ -6,7 +6,6 @@ import os
 
 
 project = os.getenv('GOOGLE_CLOUD_PROJECT')
-
 if project:
     print(f"获取到的 GOOGLE_CLOUD_PROJECT: {project}")
 else:
