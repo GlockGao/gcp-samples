@@ -17,7 +17,8 @@ def claude_predict():
     # You can set them directly in the code like this, or pre-set them in your environment.
     os.environ['MODEL_ID'] = 'claude-sonnet-4@20250514'
     os.environ['LOCATION'] = 'us-east5'
-    os.environ['LOCATION'] = 'europe-west1'
+    # os.environ['LOCATION'] = 'europe-west1'
+    # os.environ['LOCATION'] = 'global'   # 2025-08-28, global endpoint doesn't support 1M input tokens
 
     # --- 2. 从环境中获取变量 (Get Variables from Environment) ---
     model_id = os.getenv('MODEL_ID')
@@ -66,7 +67,7 @@ def claude_predict():
         "anthropic_version": "vertex-2023-10-16",
         "messages": [{
             "role": "user",
-            "content": "Hey Claude!"
+            "content": large_text
         }],
         "max_tokens": 2048,
         "stream": False,
