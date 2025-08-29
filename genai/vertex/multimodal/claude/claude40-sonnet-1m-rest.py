@@ -18,7 +18,7 @@ def claude_predict():
     os.environ['MODEL_ID'] = 'claude-sonnet-4@20250514'
     os.environ['LOCATION'] = 'us-east5'
     # os.environ['LOCATION'] = 'europe-west1'
-    # os.environ['LOCATION'] = 'global'   # 2025-08-28, global endpoint doesn't support 1M input tokens
+    os.environ['LOCATION'] = 'global'
 
     # --- 2. 从环境中获取变量 (Get Variables from Environment) ---
     model_id = os.getenv('MODEL_ID')
@@ -48,9 +48,12 @@ def claude_predict():
     # --- 4. 构建请求 (Construct the Request) ---
     # 构建请求 URL
     # Construct the request URL
-    url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/anthropic/models/{model_id}:streamRawPredict"
+    if location == 'global':
+        url = f"https://aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/anthropic/models/{model_id}:streamRawPredict"
+    else:
+        url = f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/anthropic/models/{model_id}:streamRawPredict"
 
-    # url = f"https://aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/publishers/anthropic/models/{model_id}:streamRawPredict"
+    print(f"请求 URL (Request URL): {url}")
 
     # 构建请求头
     # Construct the request headers
