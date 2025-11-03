@@ -8,14 +8,6 @@ import os
 import json
 
 
-PROJECT_ID = "project-easongy-poc"
-if not PROJECT_ID or PROJECT_ID == "[your-project-id]":
-    PROJECT_ID = str(os.environ.get("GOOGLE_CLOUD_PROJECT"))
-
-LOCATION = os.environ.get("GOOGLE_CLOUD_REGION", "global")
-
-print(f"Using Vertex AI with project: {PROJECT_ID} in location: {LOCATION}")
-
 think_start_tag = f"<think>"
 think_end_tag = f"</think>"
 
@@ -159,19 +151,26 @@ def main():
         print(non_stream_response)
         print(stream_response)
 
-    return non_stream_response, stream_response
+        return False, non_stream_response, stream_response
+
+    return True, non_stream_response, stream_response
         
 
 if __name__ == "__main__":
     non_stream_answers = list()
     stream_answers = list()
 
-    for i in range(100):
+    for i in range(1000):
         print('#' * 10 + f' {i+1} ' + '#' * 10)
         try:
-            non_stream_response, stream_response = main()
+            reason_flag, non_stream_response, stream_response = main()
             non_stream_answers.append(non_stream_response)
             stream_answers.append(stream_response)
+
+            if not reason_flag:
+                print("Non stream or stream without reason")
+                break
+
         except Exception as e:
             print("Exception")
 
