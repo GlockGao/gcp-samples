@@ -5,6 +5,7 @@ from google.auth.transport.requests import Request
 import openai
 from typing import List, Dict, Any
 import os
+import json
 
 
 PROJECT_ID = "project-easongy-poc"
@@ -15,10 +16,11 @@ LOCATION = os.environ.get("GOOGLE_CLOUD_REGION", "global")
 
 print(f"Using Vertex AI with project: {PROJECT_ID} in location: {LOCATION}")
 
+think_start_tag = f"<think>"
+think_end_tag = f"</think>"
 
 model = "google/gemini-2.5-pro"
 max_tokens = 10240
-stream = False
 temperature = 0.4
 
 system_prompt = """---\nCURRENT_TIME: Date: 2025-10-22 | Time: 21:33:19 | Weekday: Wednesday\n---\n\nLangage Setting: Ensure your language is in English\n\n# Role\n\nYou are Accio, an AI agent created by the Accio.ai team. Accio is a full-spectrum autonomous agent specifically designed for B2B ecommerce, helping buyers optimize their global sourcing process, which is capable of:\n- Matching user sourcing needs with suitable products and suppliers\n- Providing smart discovery of high-potential, trending, and winning product ideas, including recommendations for new and hot-selling opportunities\n- Facilitating the efficient, data-driven comparison of competitive products and in-depth suppliers information\n- Generating robust business reports and critical B2B analysis, encompassing: market trend analysis, consumer insights、competitive landscape analysis, strategic sourcing guides and etc.\n- Writing tailored and professional inquiry emails to streamline communication with potential suppliers.\n- Supporting new product development initiatives by identifying market gaps, emerging technologies, and consumer needs, providing actionable intelligence for innovation, and generating conceptual product images for visualization and preliminary design validation.\n\n\n\n# Task\nYou have successfully completed the task assigned by the user, Now you need to briefly summarize the task execution process and report it to the user. Your summary should be a simple markdown able to answer the user query.\nDo not conduct additional analysis, only list the key points that already exist during the task execution process.\n\n\n\n# Citations\n- **Reminder**: key points/numbers obtained from `webpage_scrape`/`web_search` results must be accompanied by citations\n    + For plain text, place inline citations at the end of the paragraph (in the same line)\n    + For markdown tables, place citations immediately after the markdown table\n- Format: `<cite>url id here</cite>`, each `<cite>` tag can only contain 1 url id (e.g., `<cite>cb1c23</cite>`), and multiple citations will be like `<cite>cb1c23</cite><cite>39a371</cite>`\n- **Reminder**: If you mention products or suppliers/manufacturers from `webpage_scrape`/`web_search` results, be sure to include a citation\n- **Reminder**: You should add as many as possible citations as long as there are urls of reference\n\n\n# Consideration\n- **CRITICAL: For suppliers, verified suppliers with strong customization capabilities MUST be ranked and displayed first. This is a mandatory requirement that cannot be violated.**\n\n\n# Must Comply\n- Structure your text based on the given `User Query`, prioritizing the parts that users are most concerned about at the beginning.\n- Only include verifiable facts from the provided source material.\n- Directly output the Markdown raw content without \"```markdown\" or \"```\".\n"""
@@ -57,7 +59,7 @@ def setup_openai_client():
     # 认证
     credentials, _ = default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
     credentials.refresh(Request())
-    print(f"Credentials token : {credentials.token}")
+    # print(f"Credentials token : {credentials.token}")
     
     # 设置API主机
     api_host = "aiplatform.googleapis.com"
@@ -100,6 +102,8 @@ def main():
 
     client = setup_openai_client()
 
+    # Non-Stream
+    stream = False
     response = generate_with_openai(
       client=client,
       messages=messages,
@@ -109,16 +113,86 @@ def main():
       extra_body=extra_body,
       model=model)
 
-    print(response)
+    # print(response)
 
+    non_stream_response = response.choices[0].message.content
     thought, answer = parse_response_with_tags(
         response.choices[0].message.content, "think")
 
-    print("--- Thought ---")
-    print(thought)
-    print("\n--- Answer ---")
-    print(answer)
 
+    print("####### Non-Stream #######")
+    if len(thought) != 0:
+        print("--- Thought ---")
+    else:
+        print(non_stream_response)
+        # print(thought)
+    # if len(answer) != 0:
+    #     print("\n--- Answer ---")
+        # print(answer)
+
+    # Stream
+    stream_response = ""
+    stream = True
+    response = generate_with_openai(
+      client=client,
+      messages=messages,
+      max_tokens=max_tokens,
+      stream=stream,
+      temperature=temperature,
+      extra_body=extra_body,
+      model=model)
+    stream = True
+    
+    print("####### Stream #######")
+    stream_response = ""
+    for chunk in response:
+        # print(chunk)
+        # print(chunk.choices[0].delta)
+        stream_response += chunk.choices[0].delta.content
+    
+    think_start_index = stream_response.find(think_start_tag)
+    think_end_index = stream_response.find(think_end_tag)
+
+    if think_start_index != -1 and think_end_index != -1:
+        print("--- Thought ---")
+    else:
+        print(non_stream_response)
+        print(stream_response)
+
+    return non_stream_response, stream_response
+        
 
 if __name__ == "__main__":
-    main()
+    non_stream_answers = list()
+    stream_answers = list()
+
+    for i in range(100):
+        print('#' * 10 + f' {i+1} ' + '#' * 10)
+        try:
+            non_stream_response, stream_response = main()
+            non_stream_answers.append(non_stream_response)
+            stream_answers.append(stream_response)
+        except Exception as e:
+            print("Exception")
+
+    print('#' * 100)
+    with open("/tmp/stream_answers.json", "w") as f:
+        json.dump(stream_answers, f)
+
+    with open("/tmp/non_stream_answers.json", "w") as f:
+        json.dump(non_stream_answers, f)
+
+    for index, (non_stream_content, stream_content) in enumerate(zip(non_stream_answers, stream_answers)):
+        print('#' * 20 + f' {index} ' + '#' * 20)
+        
+        think_start_index = non_stream_content.find(think_start_tag)
+        think_end_index = non_stream_content.find(think_end_tag)
+
+        if think_start_index != -1 and think_end_index != -1:
+            print("Non stream with reason")
+
+        think_start_index = stream_content.find(think_start_tag)
+        think_end_index = stream_content.find(think_end_tag)
+
+        if think_start_index != -1 and think_end_index != -1:
+            print("Stream with reason")
