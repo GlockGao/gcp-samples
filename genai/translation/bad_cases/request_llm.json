@@ -1,0 +1,6 @@
+{
+  "sourceLanguageCode": "",
+  "targetLanguageCode": "en",
+  "contents": ["新北桃園宜蘭澎湖花蓮?"],
+  "model": "projects/veo-testing/locations/us-central1/models/general/translation-llm"
+}
