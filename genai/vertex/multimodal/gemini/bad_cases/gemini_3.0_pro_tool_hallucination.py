@@ -631,7 +631,8 @@ messages = [
 ]
 
 max_tokens = 10240
-temperature = 0.04
+# temperature = 0.04    # if use temperature = 0.04, the model will hallucinate tool calls.
+temperature = 1         # if use temperature = 1, the model will not hallucinate tool calls.
 model = "google/gemini-3-pro-preview"
 extra_body = {
     "extra_body": {
@@ -715,7 +716,7 @@ def main():
 if __name__ == "__main__":
     model_answers = list()
 
-    for i in range(1):
+    for i in range(10):
         print('#' * 10 + f' {i+1} ' + '#' * 10)
         try:
             response = main()
