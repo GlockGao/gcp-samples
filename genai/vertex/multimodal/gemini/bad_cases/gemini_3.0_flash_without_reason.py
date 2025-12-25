@@ -36,8 +36,8 @@ extra_body = {
             "thinking_config": {
                 "include_thoughts": True,
                 # "thinking_level": "MINIMAL",
-                "thinking_level": "LOW",
-                # "thinking_level": "MEDIUM",
+                # "thinking_level": "LOW",
+                "thinking_level": "MEDIUM",
                 # "thinking_level": "HIGH",
             },
         }
