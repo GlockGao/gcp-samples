@@ -1,1 +1,1 @@
-https://docs.jax.dev/en/latest/automatic-vectorization.html
+doc: https://docs.jax.dev/en/latest/automatic-vectorization.html

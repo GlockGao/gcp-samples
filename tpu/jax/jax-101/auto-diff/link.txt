@@ -1,0 +1,2 @@
+doc:https://docs.jax.dev/en/latest/automatic-differentiation.html
+youtube: https://www.youtube.com/watch?v=wG_nF1awSSY
