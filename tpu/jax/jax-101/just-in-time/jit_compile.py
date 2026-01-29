@@ -1,4 +1,6 @@
 import time
+from functools import partial
+
 import jax
 import jax.numpy as jnp
 
@@ -99,7 +101,7 @@ print(f_jit_correct(10))
 g_jit_correct = jax.jit(g, static_argnames=['n'])
 print(g_jit_correct(10, 20))
 
-from functools import partial
+
 
 @partial(jax.jit, static_argnames=['n'])
 def g_jit_decorated(x, n):
@@ -109,3 +111,67 @@ def g_jit_decorated(x, n):
   return x + i
 
 print(g_jit_decorated(10, 20))
+
+
+print('#' * 20)
+print('7')
+
+def unjitted_loop_body(prev_i):
+  return prev_i + 1
+
+def g_inner_jitted_partial(x, n):
+  i = 0
+  while i < n:
+    # Don't do this! each time the partial returns
+    # a function with different hash
+    i = jax.jit(partial(unjitted_loop_body))(i)
+  return x + i
+
+def g_inner_jitted_lambda(x, n):
+  i = 0
+  while i < n:
+    # Don't do this!, lambda will also return
+    # a function with a different hash
+    i = jax.jit(lambda x: unjitted_loop_body(x))(i)
+  return x + i
+
+def g_inner_jitted_normal(x, n):
+  i = 0
+  while i < n:
+    # this is OK, since JAX can find the
+    # cached, compiled function
+    i = jax.jit(unjitted_loop_body)(i)
+  return x + i
+
+start_time = time.time()
+
+print("jit called in a loop with partials:")
+g_inner_jitted_partial(10, 20).block_until_ready()
+
+end_time = time.time()
+
+avg_time = (end_time - start_time)
+
+print(f"执行时间: {avg_time * 1000:.4f} ms")
+
+start_time = time.time()
+
+print("jit called in a loop with lambdas:")
+g_inner_jitted_lambda(10, 20).block_until_ready()
+
+end_time = time.time()
+
+avg_time = (end_time - start_time)
+
+print(f"执行时间: {avg_time * 1000:.4f} ms")
+
+start_time = time.time()
+
+print("jit called in a loop with caching:")
+g_inner_jitted_normal(10, 20).block_until_ready()
+
+end_time = time.time()
+
+avg_time = (end_time - start_time)
+
+print(f"执行时间: {avg_time * 1000:.4f} ms")
